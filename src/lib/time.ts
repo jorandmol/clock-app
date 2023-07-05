@@ -1,4 +1,7 @@
-import { readable } from 'svelte/store';
+import { readable, writable } from 'svelte/store';
+import type { City } from '../models/city';
+
+export const currentZone = writable<City>({ flag: '🇪🇸', name: 'Sevilla', locale: 'es-ES', timezone: 'Europe/Madrid' });
 
 export const currentTime = readable(new Date(), function start(set) {
 	const interval = setInterval(() => {
