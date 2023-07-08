@@ -11,6 +11,27 @@
 
 	$: time = timeToString ? new Date(timeToString) : new Date();
 
+	type OpDateElem = {
+		value: number;
+		toMilliseconds: number;
+	}
+
+	type OpDate = {
+		years: OpDateElem;
+		months: OpDateElem;
+		days: OpDateElem;
+		hours: OpDateElem;
+		minutes: OpDateElem;
+	}
+
+	let opDate: OpDate = {
+		years: { value: 0, toMilliseconds: 31556952000 },
+		months: { value: 0, toMilliseconds: 2629800000 },
+		days: { value: 0, toMilliseconds: 86400000 },
+		hours: { value: 0, toMilliseconds: 3600000 },
+		minutes: { value: 0, toMilliseconds: 60000 }
+	}
+
 	onMount(() => {
 		finalTime = get(currentTime);
 		const matches = get(currentTime)
@@ -29,6 +50,22 @@
 			timeToString = `${year}-${month}-${day}T${hour}:${minute}`;
 		}
 	});
+
+	function operate(): void {
+		const timeToMilliseconds: number = time.getTime();
+		
+		let timeToOperate: number = 0;
+		let k: keyof OpDate;
+		for (k in opDate) {
+			timeToOperate += (opDate[k].value ?? 0) * (opDate[k].toMilliseconds);	
+		}
+
+		const result = addOperation ? timeToMilliseconds + timeToOperate : timeToMilliseconds - timeToOperate;
+		console.log(result);
+		
+		finalTime = new Date(result);
+	}
+
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
@@ -41,6 +78,7 @@
 					name="time"
 					type="datetime-local"
 					class="input input-bordered"
+					on:change={() => operate()}
 					bind:value={timeToString}
 				/>
 			{/if}
@@ -68,39 +106,78 @@
 					<label class="label" for="day">
 						<span class="label-text">Days</span>
 					</label>
-					<input id="day" name="day" type="text" class="input input-bordered" />
+					<input
+						id="day"
+						name="day"
+						type="number"
+						min="0"
+						step="1"
+						class="input input-bordered"
+						on:change={() => operate()}
+						bind:value={opDate.days.value}
+					/>
 				</div>
 				<div class="form-control">
 					<label class="label" for="month">
 						<span class="label-text">Months</span>
 					</label>
-					<input id="month" name="month" type="text" class="input input-bordered" />
+					<input
+						id="month"
+						name="month"
+						type="number"
+						min="0"
+						step="1"
+						class="input input-bordered"
+						on:change={() => operate()}
+						bind:value={opDate.months.value}
+					/>
 				</div>
 				<div class="form-control">
 					<label class="label" for="year">
 						<span class="label-text">Years</span>
 					</label>
-					<input id="year" name="year" type="text" class="input input-bordered" />
+					<input
+						id="year"
+						name="year"
+						type="number"
+						min="0"
+						step="1"
+						class="input input-bordered"
+						on:change={() => operate()}
+						bind:value={opDate.years.value}
+					/>
 				</div>
 			</div>
-			<div class="grid grid-cols-3 gap-1">
+			<div class="grid grid-cols-2 gap-1">
 				<div class="form-control">
 					<label class="label" for="hours">
 						<span class="label-text">Hours</span>
 					</label>
-					<input id="hours" name="hours" type="text" class="input input-bordered" />
+					<input
+						id="hours"
+						name="hours"
+						type="number"
+						min="0"
+						step="1"
+						class="input input-bordered"
+						on:change={() => operate()}
+						bind:value={opDate.hours.value}
+					/>
 				</div>
 				<div class="form-control">
-					<label class="label" for="hours">
-						<span class="label-text">Hours</span>
+					<label class="label" for="minutes">
+						<span class="label-text">Minutes</span>
 					</label>
-					<input id="hours" name="hours" type="text" class="input input-bordered" />
-				</div>
-				<div class="form-control">
-					<label class="label" for="seconds">
-						<span class="label-text">Seconds</span>
-					</label>
-					<input id="seconds" name="seconds" type="text" class="input input-bordered" />
+					<input
+						id="minutes"
+						name="minutes"
+						type="number"
+						min="0"
+						step="1"
+						class="input input-bordered"
+						on:change={() => operate()}
+						bind:value={opDate.minutes.value}
+					/>
 				</div>
 			</div>
 		</div>
@@ -110,12 +187,13 @@
 			<span class="font-bold text-4xl">=</span>
 		</div>
 	</div>
-	<div class="lg:h-80 lg:col-span-3 bg-primary text-white">
+	<div class="lg:h-80 lg:col-span-3 bg-primary text-white card">
 		{#if finalTime}
 			<Clock
 				currentTime={finalTime}
 				timezone={$currentZone.timezone}
 				locale={$currentZone.locale}
+				showSeconds={false}
 			/>
 		{/if}
 	</div>

@@ -4,6 +4,7 @@
     export let locale: string;
     export let timezone: string;
     export let currentTime: Date;
+    export let showSeconds: boolean = true;
 
     let isHour12: boolean = false;
 </script>
@@ -13,7 +14,11 @@
         <div class="card-title h-full flex flex-col items-center content-center justify-between">
             <h2 class="w-full text-lg text-left">{formatDate(currentTime, locale, timezone)}</h2>
             <h1 class="w-full text-7xl text-center">
-                {formatTime(currentTime, locale, timezone, isHour12)}
+                {#if showSeconds}
+                    {formatTime(currentTime, locale, timezone, isHour12)}
+                {:else}
+                    {formatTime(currentTime, locale, timezone, isHour12).slice(0, -3)}
+                {/if}
             </h1>
             <div class="w-full flex justify-end">
                 <button
