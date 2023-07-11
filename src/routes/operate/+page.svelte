@@ -33,9 +33,12 @@
 	}
 
 	onMount(() => {
-		finalTime = get(currentTime);
-		const matches = get(currentTime)
-			.toLocaleString('es-ES', {
+		
+		finalTime = new Date(0);
+		finalTime.setUTCMilliseconds(get(currentTime));
+		
+		const matches = finalTime
+			.toLocaleString('UTC', {
 				year: 'numeric',
 				month: '2-digit',
 				day: '2-digit',
@@ -48,6 +51,8 @@
 		if (matches) {
 			const [_, day, month, year, hour, minute] = matches;
 			timeToString = `${year}-${month}-${day}T${hour}:${minute}`;
+			console.log('Pasado a string', timeToString);
+			
 		}
 	});
 
@@ -87,7 +92,10 @@
 	<div class="flex h-10 lg:h-80 justify-center content-center">
 		<button
 			class="my-auto btn btn-square btn-secondary hover:border-secondary"
-			on:click={() => (addOperation = !addOperation)}
+			on:click={() => {
+				addOperation = !addOperation;
+				operate();
+			}}
 		>
 			<span class="font-bold text-4xl">{addOperation ? '+' : '-'}</span>
 		</button>

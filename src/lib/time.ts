@@ -3,9 +3,13 @@ import type { City } from '../models/city';
 
 export const currentZone = writable<City>({ flag: '🇪🇸', name: 'Sevilla', locale: 'es-ES', timezone: 'Europe/Madrid' });
 
-export const currentTime = readable(new Date(), function start(set) {
+export const currentTime = readable(0, function start(set) {
 	const interval = setInterval(() => {
-		set(new Date());
+		const now = new Date();
+        const now_utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(),
+                        now.getUTCDate(), now.getUTCHours(),
+                        now.getUTCMinutes(), now.getUTCSeconds());
+        set(now_utc);
 	}, 1000);
 
 	return function stop() {

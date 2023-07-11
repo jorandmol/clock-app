@@ -13,10 +13,12 @@
 		{ flag: '🇺🇸', name: 'New York', locale: 'en-US', timezone: 'America/New_York' }
 	];
 
+	$: date = new Date($currentTime);
+
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-	<Clock timezone={$currentZone.timezone} locale={$currentZone.locale} currentTime={$currentTime}/>
+	<Clock timezone={$currentZone.timezone} locale={$currentZone.locale} currentTime={date}/>
 	<div class="card h-80 bg-info text-secondary">
 		<div class="card-body">
 			<h2 class="card-title">Choose a city...</h2>
